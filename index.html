@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>叶茂.exe · 正在启动大学四年</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2305080a'/%3E%3Ctext x='16' y='22' font-family='monospace' font-size='16' fill='%234ade80' text-anchor='middle'%3E%E5%8F%B6%3C/text%3E%3C/svg%3E">
+<style>
+/* ============================================================
+   方案 C · "启动中的系统" —— 终端绿主题
+   想换成冷白蓝：把下面 --green / --green-soft / --glow 三行
+   替换为注释里的冷白蓝值即可
+   ============================================================ */
+:root{
+  --bg:#05080a;
+  --panel:rgba(13,20,24,.62);
+  --panel-solid:#0c1216;
+  --line:rgba(120,220,160,.16);
+  /* 终端绿版 */
+  --green:#4ade80;
+  --green-soft:#86efac;
+  --glow:rgba(74,222,128,.45);
+  /* 冷白蓝版（换肤时取消注释）
+  --green:#7dd3fc;
+  --green-soft:#bae6fd;
+  --glow:rgba(125,211,252,.4); */
+  --amber:#fbbf24;
+  --text:#d7e4dc;
+  --muted:#7e958a;
+  --dim:#54685e;
+  --mono:"Cascadia Code","JetBrains Mono",Consolas,"Courier New",monospace;
+  --sans:system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--sans);
+  line-height:1.7;
+  overflow-x:hidden;
+}
+/* CRT 扫描线（极淡） */
+body::after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:1;
+  background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(255,255,255,.012) 3px 4px);
+}
+.wrap{max-width:1000px;margin:0 auto;padding:0 20px;position:relative;z-index:2}
+.mono{font-family:var(--mono)}
+
+/* ---------- 顶栏 ---------- */
+.topbar{
+  position:sticky;top:0;z-index:40;
+  background:rgba(5,8,10,.82);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+}
+.topbar .wrap{display:flex;align-items:center;justify-content:space-between;height:52px}
+.logo{font-family:var(--mono);color:var(--green);font-size:14px;letter-spacing:.5px}
+.logo .ver{color:var(--dim);font-size:11px;margin-left:8px}
+.topnav{display:flex;gap:22px}
+.topnav a{
+  font-family:var(--mono);font-size:12px;color:var(--muted);
+  text-decoration:none;transition:color .25s;
+}
+.topnav a:hover{color:var(--green)}
+@media(max-width:640px){.topnav{display:none}}
+
+/* ---------- Hero 启动区 ---------- */
+.hero{padding:90px 0 70px;text-align:left}
+.term-path{font-family:var(--mono);font-size:13px;color:var(--dim);margin-bottom:18px}
+.term-path .ok{color:var(--green)}
+.hero h1{
+  font-size:clamp(2.4rem,7vw,4rem);font-weight:800;
+  letter-spacing:1px;line-height:1.15;
+}
+.hero h1 .exe{color:var(--green);font-family:var(--mono);font-weight:400;font-size:.6em;vertical-align:middle}
+.boot-line{
+  font-family:var(--mono);font-size:clamp(1rem,3vw,1.25rem);
+  color:var(--green-soft);margin:26px 0 18px;min-height:1.8em;
+}
+.cursor{display:inline-block;width:.6em;background:var(--green);color:transparent;
+  margin-left:2px;animation:blink 1s steps(1) infinite;vertical-align:-.1em}
+@keyframes blink{50%{opacity:0}}
+.boot-bar{
+  height:14px;max-width:520px;border:1px solid var(--line);
+  background:var(--panel);padding:2px;border-radius:3px;
+}
+.boot-fill{
+  height:100%;width:0%;border-radius:2px;
+  background:repeating-linear-gradient(90deg,var(--green) 0 8px,transparent 8px 11px);
+  box-shadow:0 0 12px var(--glow);
+  transition:width .3s steps(6);
+}
+.boot-meta{
+  display:flex;justify-content:space-between;max-width:520px;
+  font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:8px;
+}
+.boot-meta .pct{color:var(--green)}
+.hero-tags{
+  display:flex;flex-wrap:wrap;gap:10px;margin-top:34px;
+  opacity:0;transform:translateY(10px);transition:all .7s ease;
+}
+.hero-tags.show{opacity:1;transform:none}
+.tag{
+  font-family:var(--mono);font-size:12px;color:var(--green-soft);
+  border:1px solid var(--line);background:var(--panel);
+  padding:5px 12px;border-radius:3px;
+}
+.hero-cta{margin-top:30px;display:flex;gap:14px;flex-wrap:wrap}
+.btn{
+  font-family:var(--mono);font-size:13px;text-decoration:none;
+  padding:10px 22px;border-radius:4px;transition:all .25s;
+  display:inline-block;
+}
+.btn-primary{background:var(--green);color:#04140a;font-weight:700;border:1px solid var(--green)}
+.btn-primary:hover{box-shadow:0 0 22px var(--glow);transform:translateY(-2px)}
+.btn-ghost{color:var(--green-soft);border:1px solid var(--line);background:var(--panel)}
+.btn-ghost:hover{border-color:var(--green);color:var(--green)}
+
+/* ---------- 通用区块 ---------- */
+section{padding:64px 0}
+.sec-head{margin-bottom:34px}
+.sec-cm{font-family:var(--mono);font-size:13px;color:var(--dim);display:block;margin-bottom:6px}
+.sec-cm b{color:var(--green);font-weight:400}
+.sec-head h2{font-size:clamp(1.5rem,4vw,2rem);font-weight:800;letter-spacing:.5px}
+.sec-head .en{font-family:var(--mono);font-size:13px;color:var(--muted);font-weight:400;margin-left:12px}
+/* 徽标 */
+.badge{
+  font-family:var(--mono);font-size:10px;letter-spacing:1px;
+  padding:2px 8px;border-radius:2px;white-space:nowrap;vertical-align:middle;
+}
+.b-ok{color:var(--green);border:1px solid rgba(74,222,128,.35);background:rgba(74,222,128,.08)}
+.b-load{color:var(--amber);border:1px solid rgba(251,191,36,.4);background:rgba(251,191,36,.07);animation:pulse 1.6s ease infinite}
+@keyframes pulse{50%{opacity:.45}}
+
+/* 卡片 */
+.card{
+  background:var(--panel);border:1px solid var(--line);border-radius:8px;
+  padding:24px;backdrop-filter:blur(10px);
+  transition:transform .3s,border-color .3s,box-shadow .3s;
+}
+.card:hover{transform:translateY(-4px);border-color:rgba(74,222,128,.45);
+  box-shadow:0 10px 34px rgba(0,0,0,.5),0 0 22px rgba(74,222,128,.08)}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:860px){.grid-4{grid-template-columns:repeat(2,1fr)}.grid-2{grid-template-columns:1fr}}
+
+/* 状态总览 */
+.stat .num{font-family:var(--mono);font-size:2rem;font-weight:700;color:var(--green);
+  text-shadow:0 0 18px var(--glow)}
+.stat .lbl{font-size:13px;color:var(--muted);margin:4px 0 10px}
+.stat{display:flex;flex-direction:column}
+
+/* 版本评估条 */
+.ver-row{margin-bottom:16px}
+.ver-row:last-child{margin-bottom:0}
+.ver-top{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px}
+.ver-top .name{color:var(--text)}
+.ver-top .v{font-family:var(--mono);font-size:12px;color:var(--green)}
+.ver-top .goal{font-family:var(--mono);font-size:11px;color:var(--amber);margin-left:8px}
+.bar{height:6px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden}
+.bar i{
+  display:block;height:100%;width:0;border-radius:3px;
+  background:linear-gradient(90deg,rgba(74,222,128,.35),var(--green));
+  box-shadow:0 0 8px var(--glow);
+  transition:width 1.2s cubic-bezier(.4,0,.2,1);
+}
+.bar-note{font-family:var(--mono);font-size:11px;color:var(--dim);margin-top:5px}
+
+/* RUNTIME_LOG 终端日志 */
+.log{font-family:var(--mono);font-size:13.5px}
+.log-entry{
+  border:1px solid var(--line);border-radius:6px;background:var(--panel);
+  padding:18px 20px;margin-bottom:18px;
+}
+.log-entry .path{color:var(--dim);font-size:11px;margin-bottom:6px}
+.log-head{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:8px}
+.log-head .t{color:var(--green-soft);font-weight:700}
+.log-head .where{color:var(--muted);font-size:12px}
+.log-p{color:var(--text);font-family:var(--sans);font-size:14px;margin-bottom:8px}
+.log ul{list-style:none;margin-bottom:8px}
+.log li{color:var(--muted);padding-left:20px;position:relative;font-family:var(--sans);font-size:13.5px;margin-bottom:4px}
+.log li::before{content:"> ";color:var(--green);position:absolute;left:0;font-family:var(--mono)}
+.log .output{
+  color:var(--green);font-size:12.5px;
+  border-top:1px dashed var(--line);padding-top:8px;
+}
+.log .output b{color:var(--green-soft)}
+
+/* 项目 */
+.proj-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+@media(max-width:760px){.proj-grid{grid-template-columns:1fr}}
+.proj .idx{font-family:var(--mono);font-size:12px;color:var(--dim);margin-bottom:8px;display:block}
+.proj h3{font-size:1.05rem;margin-bottom:8px}
+.proj h3 .dot{color:var(--green)}
+.proj p{font-size:13.5px;color:var(--muted);margin-bottom:14px}
+.proj p b{color:var(--text)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-family:var(--mono);font-size:11px;color:var(--green-soft);
+  border:1px solid var(--line);border-radius:999px;padding:3px 11px;background:rgba(74,222,128,.05)}
+.proj .pstat{margin-top:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.proj-cover{border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-bottom:16px;
+  background:#000;line-height:0}
+.proj-cover img{width:100%;display:block;transition:transform .35s ease,filter .35s ease;filter:saturate(.92)}
+.proj:hover .proj-cover img{transform:scale(1.03);filter:saturate(1.1)}
+.proj-link{
+  font-family:var(--mono);font-size:12px;text-decoration:none;color:var(--green);
+  border:1px solid rgba(74,222,128,.4);border-radius:4px;padding:5px 14px;
+  transition:all .25s;display:inline-block;
+}
+.proj-link:hover{background:var(--green);color:#04140a;box-shadow:0 0 18px var(--glow)}
+.cert-thumb{width:100%;border:1px solid var(--line);border-radius:6px;display:block;
+  margin-bottom:14px;max-height:180px;object-fit:cover;object-position:top}
+
+/* 头像 */
+.avatar-ring{
+  position:absolute;right:20px;top:80px;width:136px;height:136px;border-radius:50%;
+  padding:4px;border:1px solid rgba(74,222,128,.4);background:var(--panel);
+  box-shadow:0 0 34px var(--glow),inset 0 0 14px rgba(74,222,128,.12);
+  transition:transform .3s,box-shadow .3s;
+}
+.avatar-ring:hover{transform:scale(1.03);box-shadow:0 0 48px var(--glow)}
+.avatar-ring img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block}
+.avatar-ring .sys-tag{
+  position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);
+  font-family:var(--mono);font-size:9px;letter-spacing:1px;color:var(--green);
+  background:var(--panel-solid);border:1px solid var(--line);border-radius:3px;
+  padding:1px 7px;white-space:nowrap;
+}
+@media(max-width:820px){
+  .avatar-ring{position:static;width:116px;height:116px;margin:0 0 26px}
+}
+
+/* 经历配图 */
+.log-img{margin-top:14px;display:flex;gap:14px;flex-wrap:wrap}
+.log-img figure{margin:0}
+.log-img img{
+  width:230px;max-width:100%;border:1px solid var(--line);border-radius:5px;
+  display:block;transition:transform .3s,box-shadow .3s;
+}
+.log-img img:hover{transform:translateY(-3px);box-shadow:0 0 20px var(--glow)}
+.log-img figcaption{font-family:var(--mono);font-size:10.5px;color:var(--dim);margin-top:6px}
+.log-img figcaption::before{content:"› ";color:var(--green)}
+
+/* 技能 */
+.skill-row{margin-bottom:18px}
+.skill-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px}
+.skill-top .n{font-size:14px}
+.skill-top .v{font-family:var(--mono);font-size:12px;color:var(--green)}
+.skill-top .v small{color:var(--dim);margin-left:6px;font-size:11px}
+.blocks{
+  font-family:var(--mono);font-size:13px;color:var(--green);
+  letter-spacing:2px;text-shadow:0 0 10px var(--glow);white-space:nowrap;
+}
+.blocks .off{color:rgba(255,255,255,.12);text-shadow:none}
+
+/* 教育 BOOT_SEQUENCE */
+.tl{position:relative;padding-left:28px}
+.tl::before{content:"";position:absolute;left:7px;top:6px;bottom:6px;width:2px;
+  background:linear-gradient(180deg,var(--green),rgba(74,222,128,.1))}
+.tl-item{position:relative;margin-bottom:30px}
+.tl-item::before{
+  content:"";position:absolute;left:-27px;top:7px;width:12px;height:12px;border-radius:50%;
+  background:var(--bg);border:2px solid var(--green);box-shadow:0 0 10px var(--glow);
+}
+.tl-item .time{font-family:var(--mono);font-size:12px;color:var(--dim);margin-bottom:4px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.tl-item h3{font-size:1.1rem;margin-bottom:2px}
+.tl-item .school{font-size:13.5px;color:var(--muted);margin-bottom:6px}
+.tl-item p{font-size:13.5px;color:var(--muted)}
+.tl-item a{color:var(--green);font-size:13px;text-decoration:none;border-bottom:1px dashed var(--line)}
+.tl-item a:hover{text-shadow:0 0 10px var(--glow)}
+
+/* 联系 */
+.contact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:760px){.contact-grid{grid-template-columns:1fr}}
+.contact-grid .card{text-align:center;cursor:pointer}
+.contact-grid .k{font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:2px;margin-bottom:8px;display:block}
+.contact-grid .val{font-family:var(--mono);font-size:15px;color:var(--green-soft);word-break:break-all}
+.contact-grid .hint{font-size:11px;color:var(--dim);margin-top:8px;display:block}
+a.card{text-decoration:none}
+
+/* 页脚 */
+footer{border-top:1px solid var(--line);padding:34px 0 44px;text-align:center}
+footer .sys{font-family:var(--mono);font-size:12px;color:var(--muted)}
+footer .sys b{color:var(--green);font-weight:400}
+footer .next{font-family:var(--mono);font-size:11px;color:var(--dim);margin-top:8px}
+footer .next .amber{color:var(--amber)}
+
+/* Toast */
+#toast{
+  position:fixed;left:50%;bottom:36px;transform:translate(-50%,20px);
+  background:var(--panel-solid);border:1px solid var(--green);color:var(--green);
+  font-family:var(--mono);font-size:13px;padding:10px 22px;border-radius:4px;
+  opacity:0;pointer-events:none;transition:all .35s;z-index:60;
+  box-shadow:0 0 20px var(--glow);
+}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* 滚动显现 */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:none}
+::selection{background:var(--green);color:#04140a}
+</style>
+</head>
+<body>
+
+<!-- ============ 顶栏 ============ -->
+<div class="topbar">
+  <div class="wrap">
+    <div class="logo">yemao.exe<span class="ver">v3.1 · running</span></div>
+    <nav class="topnav">
+      <a href="#about">/about</a>
+      <a href="#log">/log</a>
+      <a href="#projects">/projects</a>
+      <a href="#skills">/skills</a>
+      <a href="#contact">/contact</a>
+    </nav>
+  </div>
+</div>
+
+<!-- ============ HERO 启动画面 ============ -->
+<header class="hero">
+  <div class="wrap">
+    <div class="term-path">C:\Users\叶茂&gt; run <span class="ok">大学生涯.exe</span>  --year 2026</div>
+    <div class="avatar-ring"><img src="assets/tx.jpg" alt="叶茂 照片"><span class="sys-tag">USER · 叶茂</span></div>
+    <h1>叶茂<span class="exe">.exe</span></h1>
+    <div class="boot-line"><span id="typed"></span><span class="cursor">█</span></div>
+    <div class="boot-bar"><div class="boot-fill" id="bootFill"></div></div>
+    <div class="boot-meta">
+      <span>YEAR 1 / 4</span>
+      <span class="pct" id="bootPct">0%</span>
+    </div>
+    <div class="hero-tags" id="heroTags">
+      <span class="tag">通信工程 2026级 · 南京工程学院</span>
+      <span class="tag">大一在读</span>
+      <span class="tag">来自 宿迁沭阳</span>
+      <span class="tag">AI 工具玩家</span>
+    </div>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="#contact">建立连接 // 联系我</a>
+      <a class="btn btn-ghost" href="#log">查看运行日志 ↓</a>
+    </div>
+  </div>
+</header>
+
+<!-- ============ 状态总览 ============ -->
+<section id="stats">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-cm"><b>//</b> SYSTEM_STATS</span>
+      <h2>已验证的运行记录<span class="en">verified outputs</span></h2>
+    </div>
+    <div class="grid-4">
+      <div class="card stat reveal"><span class="num">30+</span><span class="lbl">累计辅导小时</span><span><span class="badge b-ok">[COMPLETED]</span></span></div>
+      <div class="card stat reveal"><span class="num">100%</span><span class="lbl">家长满意度</span><span><span class="badge b-ok">[COMPLETED]</span></span></div>
+      <div class="card stat reveal"><span class="num">12人</span><span class="lbl">社区辅导学生</span><span><span class="badge b-ok">[COMPLETED]</span></span></div>
+      <div class="card stat reveal"><span class="num">40+</span><span class="lbl">志愿服务小时</span><span><span class="badge b-ok">[COMPLETED]</span></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 关于我 ============ -->
+<section id="about">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-cm"><b>//</b> SELF_PROFILE</span>
+      <h2>关于我<span class="en">who is running</span></h2>
+    </div>
+    <div class="grid-2">
+      <div class="card reveal">
+        <span class="sec-cm"><b>&gt;</b> 基础配置</span>
+        <p style="font-size:14px;color:var(--muted);margin-bottom:10px">南京工程学院 · 通信工程 2026级（大一在读）</p>
+        <p style="font-size:14px;color:var(--muted);margin-bottom:10px">高中理科强项：物理 / 数学</p>
+        <p style="font-size:14px;color:var(--muted)">来自江苏省宿迁市沭阳县</p>
+        <span class="pstat"><span class="badge b-load">[LOADING… 大一上学期]</span></span>
+      </div>
+      <div class="card reveal">
+        <span class="sec-cm"><b>&gt;</b> 内置特性</span>
+        <p style="font-size:14px;color:var(--muted);margin-bottom:10px">· 逻辑思维清晰，习惯把问题拆成模块</p>
+        <p style="font-size:14px;color:var(--muted);margin-bottom:10px">· 善于沟通与讲解，讲题讲得慢、讲得透</p>
+        <p style="font-size:14px;color:var(--muted)">· 热爱羽毛球，坚持比天赋更靠得住</p>
+      </div>
+      <div class="card reveal" style="grid-column:1/-1">
+        <span class="sec-cm"><b>&gt;</b> 版本状态（持续更新中）</span>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px 40px" class="ver-grid">
+          <div class="ver-row"><div class="ver-top"><span class="name">学习能力</span><span><span class="v">v2.7</span><span class="goal">目标 v3.0</span></span></div><div class="bar"><i data-w="90"></i></div></div>
+          <div class="ver-row"><div class="ver-top"><span class="name">耐心与责任心</span><span><span class="v">v2.8</span><span class="goal">目标 v3.0</span></span></div><div class="bar"><i data-w="92"></i></div></div>
+          <div class="ver-row"><div class="ver-top"><span class="name">表达与沟通</span><span><span class="v">v2.5</span></span></div><div class="bar"><i data-w="85"></i></div></div>
+          <div class="ver-row"><div class="ver-top"><span class="name">团队协作</span><span><span class="v">v2.4</span></span></div><div class="bar"><i data-w="80"></i></div></div>
+          <div class="ver-row"><div class="ver-top"><span class="name">抗压能力</span><span><span class="v">v2.3</span><span class="goal">升级中…</span></span></div><div class="bar"><i data-w="78"></i></div></div>
+          <div class="ver-row"><div class="ver-top"><span class="name">语言与证书</span><span><span class="v">2 modules</span></span></div>
+            <div class="bar-note">普通话 二级甲等 <span class="badge b-ok">[INSTALLED]</span>&nbsp;&nbsp;英语 CET-4 <span class="badge b-load">[DOWNLOADING… 备考中]</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 实践经历 RUNTIME_LOG ============ -->
+<section id="log">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-cm"><b>//</b> RUNTIME_LOG</span>
+      <h2>实践经历<span class="en">process completed</span></h2>
+    </div>
+    <div class="log">
+      <div class="log-entry reveal">
+        <div class="path">&gt; log.2025-07-01 — 2025-08-31</div>
+        <div class="log-head"><span class="t">初中数学 / 物理 家教</span><span class="where">个人 · 宿迁</span><span class="badge b-ok">[PROCESS COMPLETED]</span></div>
+        <p class="log-p">为一名初三学生提供暑期辅导，为期一个月，共授课 20 余次。</p>
+        <ul>
+          <li>根据薄弱点制定个性化复习计划，重点突破函数与力学模块</li>
+          <li>通过典型例题讲解和错题复盘，帮学生建立解题思路</li>
+          <li>定期与家长沟通学习进度，全程同步反馈</li>
+        </ul>
+        <div class="output">&gt; OUTPUT: 学生月考成绩 <b>+20 分</b> · 家长一致好评 ✓</div>
+        <div class="log-img">
+          <figure><img src="assets/jin.jpg" alt="家教辅导证明"><figcaption>辅导证明 · jin.jpg</figcaption></figure>
+        </div>
+      </div>
+      <div class="log-entry reveal">
+        <div class="path">&gt; log.2025-08-01 — 2025-08-31</div>
+        <div class="log-head"><span class="t">暑期社会实践 · 社区课业辅导</span><span class="where">社区志愿服务 · 宿迁</span><span class="badge b-ok">[优秀志愿者]</span></div>
+        <p class="log-p">参与社区青少年暑期课业辅导，为中小学生提供作业答疑与课程辅导。</p>
+        <ul>
+          <li>负责数学、英语科目答疑，累计辅导学生 12 人</li>
+          <li>协助组织课外阅读分享会，激发学生阅读兴趣</li>
+        </ul>
+        <div class="output">&gt; OUTPUT: <b>优秀志愿者</b> 称号 · 家长满意度 <b>100%</b> ✓</div>
+        <div class="log-img">
+          <figure><img src="assets/sx.jpg" alt="社会实践证明"><figcaption>社会实践证明 · sx.jpg</figcaption></figure>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 项目 PROJECTS ============ -->
+<section id="projects">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-cm"><b>//</b> PROJECTS</span>
+      <h2>项目与活动<span class="en">build log</span></h2>
+    </div>
+    <div class="proj-grid">
+      <div class="card proj reveal">
+        <span class="idx">PROJECT // 00</span>
+        <h3>本网站 · 叶茂.exe<span class="dot">.</span></h3>
+        <p>零前端基础，用 <b>AI vibe coding</b> 从零做出的个人简历网站——网站本身就是我的第一个作品，并且会随每个学期持续迭代。</p>
+        <div class="chips"><span class="chip">AI 协作开发</span><span class="chip">HTML/CSS/JS</span><span class="chip">持续更新</span></div>
+        <span class="pstat"><span class="badge b-load">[LIVE · v3.1]</span></span>
+      </div>
+      <div class="card proj reveal">
+        <span class="idx">PROJECT // 01</span>
+        <h3>霓虹战域 NEON STRIKERS<span class="dot">.</span></h3>
+        <div class="proj-cover"><img src="game-cover.jpg" alt="霓虹战域 游戏截图"></div>
+        <p>用 AI vibe coding 开发的<b>竖屏弹幕射击游戏</b>：Canvas 渲染 + DOM 覆盖层 UI，三种可选战机、五个关卡模式，融合 Roguelike 强化——升级三选一、擦弹得分、EMP 大招、星核成长与本地最高分记录，支持键盘与触屏双操作。</p>
+        <div class="chips"><span class="chip">Canvas 游戏开发</span><span class="chip">Roguelike</span><span class="chip">AI 协作开发</span></div>
+        <span class="pstat">
+          <a class="proj-link" href="https://brilliant-mousse-a52542.netlify.app/" target="_blank" rel="noopener">▶ 在线试玩 ↗</a>
+          <span class="badge b-ok">[LIVE · 可游玩]</span>
+        </span>
+      </div>
+      <div class="card proj reveal">
+        <span class="idx">PROJECT // 02</span>
+        <h3>AI 技能认证<span class="dot">.</span></h3>
+        <img class="cert-thumb" src="assets/zs.jpg" alt="AI 技能认证证书">
+        <p>完成人工智能基础与应用课程并通过官方认证，涵盖 <b>机器学习、神经网络与提示工程</b>，具备 AI 模型的理解与初步应用能力。</p>
+        <div class="chips"><span class="chip">AI 认证</span><span class="chip">机器学习</span><span class="chip">提示工程</span></div>
+        <span class="pstat"><span class="badge b-ok">[INSTALLED]</span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 技能 SKILL_MODULES ============ -->
+<section id="skills">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-cm"><b>//</b> SKILL_MODULES</span>
+      <h2>技能栈<span class="en">currently loaded</span></h2>
+    </div>
+    <div class="grid-2">
+      <div class="card reveal">
+        <span class="sec-cm"><b>&gt;</b> 学科基础</span>
+        <div class="skill-row"><div class="skill-top"><span class="n">数学（高中）</span><span class="v">v2.7<small>90%</small></span></div><div class="blocks" data-w="90"></div></div>
+        <div class="skill-row"><div class="skill-top"><span class="n">物理（高中）</span><span class="v">v2.5<small>85%</small></span></div><div class="blocks" data-w="85"></div></div>
+        <div class="skill-row"><div class="skill-top"><span class="n">英语（阅读/写作）</span><span class="v">v2.2<small>75%</small></span></div><div class="blocks" data-w="75"></div></div>
+      </div>
+      <div class="card reveal">
+        <span class="sec-cm"><b>&gt;</b> 效率工具</span>
+        <div class="skill-row"><div class="skill-top"><span class="n">Word / Excel / PPT</span><span class="v">v2.4<small>80%</small></span></div><div class="blocks" data-w="80"></div></div>
+        <div class="skill-row"><div class="skill-top"><span class="n">思维导图 / 笔记体系</span><span class="v">v2.1<small>70%</small></span></div><div class="blocks" data-w="70"></div></div>
+        <div class="bar-note">▸ 正在安装：C 语言 · 高等数学（大一上）　▸ 待安装：信号与系统</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 教育 BOOT_SEQUENCE ============ -->
+<section id="edu">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-cm"><b>//</b> BOOT_SEQUENCE</span>
+      <h2>教育背景<span class="en">boot order</span></h2>
+    </div>
+    <div class="tl">
+      <div class="tl-item reveal">
+        <div class="time">2026.09 — 2030.06 <span class="badge b-load">[LOADING… 大一上 · 进行中]</span></div>
+        <h3>本科 · 通信工程</h3>
+        <div class="school">南京工程学院 · 通信与信息工程学院 · 南京</div>
+        <p>大一在读，正在打高数与 C 语言基础，期待后续深入钻研信号处理、无线通信等领域。</p>
+        <p style="margin-top:6px"><a href="https://www.njit.edu.cn/" target="_blank" rel="noopener">› 访问学校官网</a></p>
+      </div>
+      <div class="tl-item reveal">
+        <div class="time">2020.09 — 2026.06 <span class="badge b-ok">[COMPLETED]</span></div>
+        <h3>高中 · 理科</h3>
+        <div class="school">沭阳如东中学 · 宿迁沭阳</div>
+        <p>物理、数学成绩突出，多次获得"三好学生"称号。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 联系 CONTACT ============ -->
+<section id="contact">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-cm"><b>//</b> CONTACT</span>
+      <h2>建立连接<span class="en">open a socket</span></h2>
+    </div>
+    <div class="contact-grid">
+      <a class="card reveal" href="tencent://message/?uin=212089996">
+        <span class="k">QQ</span><span class="val">212089996</span>
+        <span class="hint">点击唤起 QQ 临时会话</span>
+      </a>
+      <div class="card reveal" id="copyWx">
+        <span class="k">WECHAT</span><span class="val">Yemao20200303</span>
+        <span class="hint">点击复制微信号</span>
+      </div>
+      <a class="card reveal" href="tel:15150747091">
+        <span class="k">TEL</span><span class="val">15150747091</span>
+        <span class="hint">点击直接拨号</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 页脚 ============ -->
+<footer>
+  <div class="wrap">
+    <div class="sys">© 2026 叶茂 · <b>系统持续更新中</b> · Designed with AI (vibe coding)</div>
+    <div class="next">下次更新：<span class="amber">大一上学期期末</span> · 当前版本 v3.1 · 进度 26%</div>
+  </div>
+</footer>
+
+<div id="toast">已复制 ✓</div>
+
+<script>
+/* ---------- Hero 打字机 + 启动进度条 ---------- */
+(function(){
+  var line = "叶茂.exe 正在启动 大学四年 …";
+  var typed = document.getElementById("typed");
+  var fill = document.getElementById("bootFill");
+  var pct = document.getElementById("bootPct");
+  var tags = document.getElementById("heroTags");
+  var i = 0;
+  var tw = setInterval(function(){
+    typed.textContent = line.slice(0, ++i);
+    if(i >= line.length){
+      clearInterval(tw);
+      // 进度条走到 26%（2026 / 大一）
+      var cur = 0;
+      var bar = setInterval(function(){
+        cur += 2;
+        if(cur >= 26){ cur = 26; clearInterval(bar); }
+        fill.style.width = cur + "%";
+        pct.textContent = cur + "%";
+        if(cur === 26){
+          pct.innerHTML = '26% <span style="color:var(--amber)">· READY</span>';
+          tags.classList.add("show");
+        }
+      }, 45);
+    }
+  }, 55);
+})();
+
+/* ---------- 滚动显现 ---------- */
+(function(){
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        e.target.classList.add("visible");
+        io.unobserve(e.target);
+      }
+    });
+  },{threshold:.1,rootMargin:"0px 0px -40px 0px"});
+  document.querySelectorAll(".reveal").forEach(function(el){ io.observe(el); });
+  // 兜底：首屏
+  setTimeout(function(){
+    document.querySelectorAll(".hero .reveal").forEach(function(el){ el.classList.add("visible"); });
+  },200);
+})();
+
+/* ---------- 版本条 & 技能块动画 ---------- */
+(function(){
+  function fillBars(scope){
+    scope.querySelectorAll(".bar i[data-w]").forEach(function(b){
+      b.style.width = b.getAttribute("data-w") + "%";
+    });
+    scope.querySelectorAll(".blocks[data-w]").forEach(function(bk){
+      var w = parseInt(bk.getAttribute("data-w"),10);
+      var total = 14, on = Math.round(w/100*total), s = "";
+      for(var k=0;k<total;k++){ s += k<on ? "█" : "<span class='off'>░</span>"; }
+      bk.innerHTML = s;
+    });
+  }
+  var io2 = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){ fillBars(e.target); io2.unobserve(e.target); }
+    });
+  },{threshold:.2});
+  document.querySelectorAll("#about, #skills").forEach(function(sec){ io2.observe(sec); });
+})();
+
+/* ---------- 点击复制微信号 ---------- */
+(function(){
+  var btn = document.getElementById("copyWx");
+  var toast = document.getElementById("toast");
+  var timer = null;
+  function ok(){
+    toast.classList.add("show");
+    clearTimeout(timer);
+    timer = setTimeout(function(){ toast.classList.remove("show"); },2200);
+  }
+  btn.addEventListener("click", function(){
+    var text = "Yemao20200303";
+    if(navigator.clipboard && window.isSecureContext){
+      navigator.clipboard.writeText(text).then(ok).catch(function(){ fallback(text); ok(); });
+    }else{ fallback(text); ok(); }
+  });
+  function fallback(t){
+    var ta = document.createElement("textarea");
+    ta.value = t; ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand("copy"); }catch(e){}
+    document.body.removeChild(ta);
+  }
+})();
+</script>
+</body>
+</html>
