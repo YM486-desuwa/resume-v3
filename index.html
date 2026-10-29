@@ -210,7 +210,13 @@ section{padding:64px 0}
 }
 .proj-link:hover{background:var(--green);color:#04140a;box-shadow:0 0 18px var(--glow)}
 .cert-thumb{width:100%;border:1px solid var(--line);border-radius:6px;display:block;
-  margin-bottom:14px;max-height:180px;object-fit:cover;object-position:top}
+  transition:filter .3s ease}
+.cert-stack{display:flex;flex-direction:column;gap:16px;margin-bottom:14px}
+.cert-item a{display:block;line-height:0}
+.cert-item a:hover .cert-thumb{filter:brightness(1.08)}
+.cert-tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;color:var(--green-soft);
+  display:inline-block;margin-bottom:6px;padding:2px 9px;border-radius:999px;
+  border:1px solid var(--line);background:rgba(74,222,128,.05);line-height:1.6}
 
 /* 头像 */
 .avatar-ring{
@@ -465,10 +471,24 @@ footer .next .amber{color:var(--amber)}
       <div class="card proj reveal">
         <span class="idx">PROJECT // 02</span>
         <h3>AI 技能认证<span class="dot">.</span></h3>
-        <img class="cert-thumb" src="assets/zs.jpg" alt="AI 技能认证证书">
-        <p>完成人工智能基础与应用课程并通过官方认证，涵盖 <b>机器学习、神经网络与提示工程</b>，具备 AI 模型的理解与初步应用能力。</p>
-        <div class="chips"><span class="chip">AI 认证</span><span class="chip">机器学习</span><span class="chip">提示工程</span></div>
-        <span class="pstat"><span class="badge b-ok">[INSTALLED]</span></span>
+        <div class="cert-stack">
+          <div class="cert-item">
+            <span class="cert-tag">CERT // 01 · 初级</span>
+            <a href="assets/zs.jpg" target="_blank" rel="noopener">
+              <img class="cert-thumb" src="assets/zs.jpg" alt="AI 技能认证证书（初级）">
+            </a>
+          </div>
+          <div class="cert-item">
+            <span class="cert-tag">CERT // 02 · 高级</span>
+            <a href="assets/zs-advanced.jpg" target="_blank" rel="noopener">
+              <img class="cert-thumb" src="assets/zs-advanced.jpg" alt="人工智能训练师证书（高级）">
+            </a>
+          </div>
+        </div>
+        <p>初级：完成人工智能基础与应用课程认证，涵盖 <b>机器学习、神经网络与提示工程</b>。<br>
+          高级：达摩院<b>人工智能训练师（高级）</b>培训认证，主攻智能客服场景的模型训练与调优。</p>
+        <div class="chips"><span class="chip">AI 认证</span><span class="chip">机器学习</span><span class="chip">提示工程</span><span class="chip">达摩院 · 高级</span></div>
+        <span class="pstat"><span class="badge b-ok">[INSTALLED · 2 CERTS]</span></span>
       </div>
     </div>
   </div>
